@@ -1,12 +1,12 @@
-# Meteor Spyfall
+# Meteor 2 Rooms 1 Boom
 
-Spyfall on your mobile device!
+2 Rooms 1 Boom on your mobile device!
 
-This is the code that currently runs [http://spyfall.meteor.com](http://spyfall.meteor.com). It's a simple site I've built as a learning project, so definitely don't use it as an example of Meteor best practices. Pull requests welcome!
+This is the code that currently runs [http://2 Rooms 1 Boom.meteor.com](http://2 Rooms 1 Boom.meteor.com). It's a simple site I've built as a learning project, so definitely don't use it as an example of Meteor best practices. Pull requests welcome!
 
 ## Disclaimer
 
-[Spyfall](http://international.hobbyworld.ru/catalog/25-spyfall/) is a party game designed by Alexandr Ushan and published by [Hobby World](http://international.hobbyworld.ru/). This is an unofficial fan project designed to complement the physical game, and is not endorsed in any way by the designer or publisher.
+[2 Rooms 1 Boom](http://international.hobbyworld.ru/catalog/25-2 Rooms 1 Boom/) is a party game designed by Alexandr Ushan and published by [Hobby World](http://international.hobbyworld.ru/). This is an unofficial fan project designed to complement the physical game, and is not endorsed in any way by the designer or publisher.
 
 ## Translations
 
@@ -16,13 +16,13 @@ If you'd like to see the site in your own language, there are two ways to contri
 
 Transifex is an easy to use translation service. It has a nice interface and is great for non-programmers. Simply go to the following link:
 
-[https://www.transifex.com/projects/p/spyfall/](https://www.transifex.com/projects/p/spyfall/)
+[https://www.transifex.com/projects/p/2Rooms1Boom/](https://www.transifex.com/projects/p/2 Rooms 1 Boom/)
 
-Then click the big "Help Translate Spyfall" button. After creating a user account you should be able to start working on a translation right away. Once you're done, I'll be sent an email and will add your translation to the live site as soon as possible.
+Then click the big "Help Translate 2 Rooms 1 Boom" button. After creating a user account you should be able to start working on a translation right away. Once you're done, I'll be sent an email and will add your translation to the live site as soon as possible.
 
 ### Pull request
 
-If you're comfortable with Github and JSON files, feel free to simply create a new file in the `spyfall/i18n` directory, using `en.i18n.json` as a base.
+If you're comfortable with Github and JSON files, feel free to simply create a new file in the `2 Rooms 1 Boom/i18n` directory, using `en.i18n.json` as a base.
 
 ### Notes for translators
 
@@ -34,11 +34,11 @@ Please make sure that the translations you provide are as close as possible to t
 
 Clone the repository:
 
-	git clone https://github.com/evanbrumley/spyfall.git ./spyfall
+	git clone https://github.com/DanielLuu/2rooms1boom ./2Rooms1Boom
 
-Enter the spyfall directory:
+Enter the 2Rooms1Boom directory:
 
-	cd spyfall/spyfall
+	cd 2Rooms1Boom/2Rooms1Boom
 
 Edit the locations file as required:
 

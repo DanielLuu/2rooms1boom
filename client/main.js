@@ -130,7 +130,9 @@ function generateNewPlayer(game, name){
     name: name,
     role: null,
     isBomber: false,
-    isPresident: false
+    isPresident: false,
+    isLeader: false,
+    isRoom1: false
   };
 
   var playerID = Players.insert(player);
