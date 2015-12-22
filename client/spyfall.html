@@ -25,6 +25,10 @@
   </div>
 </template>
 
+<template name="leaderMenu">
+  <div>Leader Menu</div>
+</template>
+
 <template name="startMenu">
   <div class="main-menu">
     <h4>{{_ "ui.welcome to spyfall" }}</h4>
@@ -122,14 +126,20 @@
     </div>
   </div>
 
+  {{#if isLeader player._id}}
+    {{> leaderMenu}}
+  {{/if}}
+  <div>
+  </div>
+
   <h5>{{_ "ui.room1" }}</h5>
   <ul class="ingame-player-list">
     {{#each players }}
       {{#if isRoom1}}
         <li>
-          <div class="player-name">
+          <div class="player-name" data-room="1" data-id={{_id}}>
             {{ name }}
-            {{#if isLeader}}
+            {{#if leaderRoomOne _id}}
               <div class="first-player-indicator">{{{_ "ui.first" }}}</div>
             {{/if}}
           </div>
@@ -143,11 +153,11 @@
     {{#each players }}
       {{#unless isRoom1}}
         <li>
-          <div class="player-name">
+          <div class="player-name" data-room="2" data-id={{_id}}>
             {{ name }}
-            {{#if isLeader}}
-              <div class="first-player-indicator">{{{_ "ui.first" }}}</div>
-            {{/if}}
+          {{#if leaderRoomTwo _id}}
+            <div class="first-player-indicator">{{{_ "ui.first" }}}</div>
+          {{/if}}
           </div>
         </li>
       {{/unless}}

@@ -472,6 +472,19 @@ function getTimeRemaining(){
 
 Template.gameView.helpers({
   game: getCurrentGame,
+  isLeader: function(id) {
+    var game = getCurrentGame(); 
+    return game.leaderRoomOne === id || game.leaderRoomOne === id;
+  },
+  leaderRoomOne: function (id) {
+    var game = getCurrentGame();
+    return game.leaderRoomOne === id;
+
+  },
+  leaderRoomTwo: function (id) {
+    var game = getCurrentGame();
+    return game.leaderRoomTwo === id;
+  },
   player: getCurrentPlayer,
   players: function () {
     var game = getCurrentGame();
@@ -526,15 +539,12 @@ Template.gameView.events({
     }
   },
   'click .player-name': function (event) {
-    event.target.className = 'player-name-striked';
-  },
-  'click .player-name-striked': function(event) {
-    event.target.className = 'player-name';
-  },
-  'click .location-name': function (event) {
-    event.target.className = 'location-name-striked';
-  },
-  'click .location-name-striked': function(event) {
-    event.target.className = 'location-name';
+    var playerId = event.target.getAttribute('data-id');
+    var room = event.target.getAttribute('data-room');
+    var gameId = Games.findOne()._id;
+    Meteor.call('updateLeader', playerId, gameId, room, function(err, res) {
+      console.log(err);
+      console.log(res);
+    });
   }
 });

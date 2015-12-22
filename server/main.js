@@ -58,7 +58,7 @@ function assignRooms(players){
   });
 }
 
-function assignLeaders(players){
+function assignLeaders(players, id){
   var room1 = [];
   var room2 = [];
   players.forEach(function(player){
@@ -71,8 +71,8 @@ function assignLeaders(players){
 
   var leader1Index = Math.floor(Math.random() * room1.length);
   var leader2Index = Math.floor(Math.random() * room2.length);
-  Players.update(room1[leader1Index]._id, {$set: {isLeader: true}});
-  Players.update(room2[leader2Index]._id, {$set: {isLeader: true}});
+
+  Games.update(id, {$set: {leaderRoomOne: room1[leader1Index]._id, leaderRoomTwo: room2[leader1Index]._id }});
 }
 
 Meteor.startup(function () {
@@ -111,7 +111,7 @@ Games.find({"state": 'settingUp'}).observeChanges({
 
     assignRoles(players, location);
     assignRooms(players);
-    assignLeaders(players);
+    assignLeaders(players, id);
 
     Games.update(id, {$set: {state: 'inProgress', location: location, endTime: gameEndTime, paused: false, pausedTime: null}});
   }
