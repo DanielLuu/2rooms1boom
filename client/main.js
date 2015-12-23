@@ -131,7 +131,6 @@ function generateNewPlayer(game, name){
     role: null,
     isBomber: false,
     isPresident: false,
-    isLeader: false,
     isRoom1: false
   };
 
@@ -474,7 +473,7 @@ Template.gameView.helpers({
   game: getCurrentGame,
   isLeader: function(id) {
     var game = getCurrentGame(); 
-    return game.leaderRoomOne === id || game.leaderRoomOne === id;
+    return game.leaderRoomOne === id || game.leaderRoomTwo === id;
   },
   leaderRoomOne: function (id) {
     var game = getCurrentGame();

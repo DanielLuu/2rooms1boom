@@ -26,10 +26,11 @@ function shuffleArray(array) {
 }
 
 function assignRoles(players, location){
-  var roles = location.roles.slice();
-  for (i = 0; i < (players.count() - 1)/2; i++) {
-    roles.push(location.roles[location.roles.length - 1]);
-    roles.push(location.roles[location.roles.length - 2]);
+  var roles = [];
+
+  for (i = 0; i < (players.count() - 2)/2; i++) {
+    roles.push('locations.roles.airplane.red');
+    roles.push('locations.roles.airplane.blue');
   }
   var shuffled_roles = shuffleArray(roles);
   var role = null;
@@ -99,8 +100,14 @@ Games.find({"state": 'settingUp'}).observeChanges({
     var players = Players.find({gameID: id});
     var gameEndTime = moment().add(game.lengthInMinutes, 'minutes').valueOf();
 
-    var bomberIndex = Math.floor(Math.random() * players.count());
-    var presidentIndex = Math.floor(Math.random() * players.count());
+    var roleIndex = [];
+    for (i = 0; i < players.count(); i++){
+      roleIndex.push(i);
+    }
+    var shuffledRoles = shuffleArray(roleIndex);
+
+    var bomberIndex = shuffledRoles.pop();
+    var presidentIndex = shuffledRoles.pop();
     
     players.forEach(function(player, index){
       Players.update(player._id, {$set: {
