@@ -371,15 +371,29 @@ a {
     text-decoration: line-through;
 }
 
-.first-player-indicator {
+.leader-indicator {
     display: inline;
-    color: #ff0000;
+    color: green;
     font-size: 12px;
     position: relative;
     top: -6px;
 }
 
-.first-player-indicator span {
+.leader-indicator span {
+    position: relative;
+    top: -2px;
+    font-size: 8px;
+}
+
+.hostage-indicator {
+    display: inline;
+    color: purple;
+    font-size: 12px;
+    position: relative;
+    top: -6px;
+}
+
+.hostage-indicator span {
     position: relative;
     top: -2px;
     font-size: 8px;
@@ -425,4 +439,8 @@ input[type="text"] {
 
 .blue {
     color: blue;
+}
+
+.not-room {
+    margin: 10px 0;
 }

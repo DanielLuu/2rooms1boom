@@ -112,7 +112,7 @@ function generateNewGame(){
     accessCode: generateAccessCode(),
     state: "waitingForPlayers",
     location: null,
-    lengthInMinutes: 8,
+    lengthInMinutes: 2,
     endTime: null,
     paused: false,
     pausedTime: null
@@ -484,6 +484,18 @@ Template.gameView.helpers({
     var game = getCurrentGame();
     return game.leaderRoomTwo === id;
   },
+  isHostage: function(id) {
+    var game = getCurrentGame(); 
+    return game.hostageRoomOne === id || game.hostageRoomTwo === id;
+  },
+  hostageRoomOne: function (id) {
+    var game = getCurrentGame();
+    return game.hostageRoomOne === id;
+  },
+  hostageRoomTwo: function (id) {
+    var game = getCurrentGame();
+    return game.hostageRoomTwo === id;
+  },
   player: getCurrentPlayer,
   players: function () {
     var game = getCurrentGame();
@@ -538,12 +550,21 @@ Template.gameView.events({
     }
   },
   'click .player-name': function (event) {
+    var game = getCurrentGame();
     var playerId = event.target.getAttribute('data-id');
     var room = event.target.getAttribute('data-room');
     var gameId = Games.findOne()._id;
-    Meteor.call('updateLeader', playerId, gameId, room, function(err, res) {
-      console.log(err);
-      console.log(res);
-    });
+    var currentPlayer = getCurrentPlayer();
+    if ((currentPlayer._id ===  game.leaderRoomOne && room == 1) || (currentPlayer._id ===  game.leaderRoomTwo && room == 2)) {
+      Meteor.call('updateHostage', playerId, gameId, room, function(err, res) {
+        console.log(err);
+        console.log(res);
+      }); 
+    } else if ((currentPlayer.isRoom1 ==  true && room == 1) || (currentPlayer.isRoom1 ==  false && room == 2)) {
+      Meteor.call('updateLeader', playerId, gameId, room, function(err, res) {
+        console.log(err);
+        console.log(res);
+      });   
+    }
   }
 });

@@ -132,37 +132,51 @@
   <div>
   </div>
 
-  <h5>{{_ "ui.room1" }}</h5>
-  <ul class="ingame-player-list">
-    {{#each players }}
-      {{#if isRoom1}}
-        <li>
-          <div class="player-name" data-room="1" data-id={{_id}}>
-            {{ name }}
-            {{#if leaderRoomOne _id}}
-              <div class="first-player-indicator">{{{_ "ui.first" }}}</div>
-            {{/if}}
-          </div>
-        </li>
-      {{/if}}
-    {{/each}}
-  </ul>
+  {{#if player.isRoom1}}
+    <h5>{{_ "ui.room1" }}</h5>
+    <ul class="ingame-player-list">
+      {{#each players }}
+        {{#if isRoom1}}
+          <li>
+            <div class="player-name" data-room="1" data-id={{_id}}>
+              {{ name }}
+              {{#if leaderRoomOne _id}}
+                <div class="leader-indicator">{{{_ "ui.leader" }}}</div>
+                {{else}} {{#if hostageRoomOne _id}}
+                 <div class="hostage-indicator">{{{_ "ui.hostage" }}}</div>
+                {{/if}}
+              {{/if}}
+            </div>
+          </li>
+        {{/if}}
+      {{/each}}
+    </ul>
+  {{else}}
+    <h5 class="not-room">{{_ "ui.room1" }} - {{players.count}} players</h5>
+  {{/if}}
 
-  <h5>{{_ "ui.room2" }}</h5>
-  <ul class="ingame-player-list">
-    {{#each players }}
-      {{#unless isRoom1}}
-        <li>
-          <div class="player-name" data-room="2" data-id={{_id}}>
-            {{ name }}
-          {{#if leaderRoomTwo _id}}
-            <div class="first-player-indicator">{{{_ "ui.first" }}}</div>
-          {{/if}}
-          </div>
-        </li>
-      {{/unless}}
-    {{/each}}
-  </ul>
+  {{#unless player.isRoom1}}
+    <h5>{{_ "ui.room2" }}</h5>
+    <ul class="ingame-player-list">
+      {{#each players }}
+        {{#unless isRoom1}}
+          <li>
+            <div class="player-name" data-room="2" data-id={{_id}}>
+              {{ name }}
+            {{#if leaderRoomTwo _id}}
+              <div class="leader-indicator">{{{_ "ui.leader" }}}</div>
+              {{else}} {{#if hostageRoomTwo _id}}
+               <div class="hostage-indicator">{{{_ "ui.hostage" }}}</div>
+              {{/if}}
+            {{/if}}
+            </div>
+          </li>
+        {{/unless}}
+      {{/each}}
+    </ul>
+  {{else}}
+    <h5 class="not-room">{{_ "ui.room2" }} - {{players.count}} players</h5>
+  {{/unless}}
 
   <div class="u-cf"></div>
   
