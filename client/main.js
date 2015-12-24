@@ -115,7 +115,8 @@ function generateNewGame(){
     lengthInMinutes: 2,
     endTime: null,
     paused: false,
-    pausedTime: null
+    pausedTime: null,
+    round: 0
   };
 
   var gameID = Games.insert(game);
@@ -170,6 +171,7 @@ function trackGameState () {
 
   if(game.state === "inProgress"){
     Session.set("currentView", "gameView");
+    Tracker.autorun(checkRounds);
   } else if (game.state === "waitingForPlayers") {
     Session.set("currentView", "lobby");
   }
@@ -469,6 +471,38 @@ function getTimeRemaining(){
   return timeRemaining;
 }
 
+function getRoundsRemaining(){
+  var game = getCurrentGame();
+  var players = Players.find({
+    'gameID': game._id
+  });
+  if (players.count() > 10){
+    return game.round - 5;
+  } else {
+    return game.round - 3; 
+  }
+}
+
+function checkRounds() {
+  var game = getCurrentGame();
+  if (getRoundsRemaining() < 0 && getTimeRemaining() == 0) {
+    var players = Players.find({
+      'gameID': game._id
+    });
+    players.forEach(function(player){
+      if (player._id === game.hostageRoomOne){
+        Players.update(player._id, {$set: {isRoom1: false}});
+      } else if (player._id === game.hostageRoomTwo){
+        Players.update(player._id, {$set: {isRoom1: true}});
+      }
+    });
+    var newRound = game.round + 1;
+    var gameEndTime = moment().add(game.lengthInMinutes, 'minutes').valueOf();
+    console.log('checking');
+    Games.update(game._id, {$set: {hostageRoomOne: null, hostageRoomTwo: null, round: newRound, endTime: gameEndTime}});
+  }
+}
+
 Template.gameView.helpers({
   game: getCurrentGame,
   isLeader: function(id) {
@@ -515,13 +549,16 @@ Template.gameView.helpers({
   },
   gameFinished: function () {
     var timeRemaining = getTimeRemaining();
-
-    return timeRemaining === 0;
+    var roundsRemaining = getRoundsRemaining();
+    return (roundsRemaining === 0 && timeRemaining === 0);
   },
   timeRemaining: function () {
     var timeRemaining = getTimeRemaining();
 
     return moment(timeRemaining).format('mm[<span>:</span>]ss');
+  },
+  half: function(num) {
+    return num/2;
   }
 });
 
