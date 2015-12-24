@@ -126,9 +126,36 @@
     </div>
   </div>
 
-  {{#if isLeader player._id}}
+<!--   {{#if isLeader player._id}}
     {{> leaderMenu}}
+  {{/if}} -->
+
+  {{#if isVoting}}
+    <div>
+      <h5>Leader Vote</h5>
+      <ul class="ingame-player-list">
+        {{#each players }}
+          
+            <li>
+              <div class="player-name" data-room="1" data-id={{_id}}>
+                {{ name }}
+                {{#if leaderRoomOne _id}}
+                  <div class="leader-indicator">{{{_ "ui.leader" }}}</div>
+                  {{else}} {{#if hostageRoomOne _id}}
+                   <div class="hostage-indicator">{{{_ "ui.hostage" }}}</div>
+                  {{/if}}
+                {{/if}}
+              </div>
+            </li>
+          {{/if}}
+        {{/each}}
+      </ul>
+      <div class="button-container">
+        <button class="btn-vote">{{_ "ui.vote" }}</button>
+      </div>
+    </div>
   {{/if}}
+
   <div>
   </div>
 
@@ -140,11 +167,16 @@
           <li>
             <div class="player-name" data-room="1" data-id={{_id}}>
               {{ name }}
+
               {{#if leaderRoomOne _id}}
                 <div class="leader-indicator">{{{_ "ui.leader" }}}</div>
                 {{else}} {{#if hostageRoomOne _id}}
                  <div class="hostage-indicator">{{{_ "ui.hostage" }}}</div>
                 {{/if}}
+              {{/if}}
+
+              {{#if isVoting}}
+                <span> - {{getVotes _id}}</span>
               {{/if}}
             </div>
           </li>
@@ -152,7 +184,7 @@
       {{/each}}
     </ul>
   {{else}}
-    <h5 class="not-room">{{_ "ui.room1" }} - {{players.count}} players</h5>
+    <h5 class="not-room">{{_ "ui.room1" }} - {{half players.count}} players</h5>
   {{/if}}
 
   {{#unless player.isRoom1}}
@@ -190,6 +222,10 @@
   </ul>
 
   <hr>
+
+  <div class="button-container">
+    <button class="btn-vote">{{_ "ui.vote" }}</button>
+  </div>
 
   <div class="button-container">
     <button class="btn-end">{{_ "ui.end game" }}</button>

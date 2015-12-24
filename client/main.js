@@ -132,7 +132,8 @@ function generateNewPlayer(game, name){
     role: null,
     isBomber: false,
     isPresident: false,
-    isRoom1: false
+    isRoom1: false,
+    votes: 0
   };
 
   var playerID = Players.insert(player);
@@ -530,6 +531,13 @@ Template.gameView.helpers({
     var game = getCurrentGame();
     return game.hostageRoomTwo === id;
   },
+  getVotes: function(id) {
+    var player = Players.findOne(id); 
+    return player.votes;
+  },
+  isVoting: function (id) {
+    return game.isVoting;
+  },
   player: getCurrentPlayer,
   players: function () {
     var game = getCurrentGame();
@@ -601,7 +609,11 @@ Template.gameView.events({
       Meteor.call('updateLeader', playerId, gameId, room, function(err, res) {
         console.log(err);
         console.log(res);
-      });   
+      });
     }
+  },
+  'click .btn-vote': function () {
+    var game = getCurrentGame();
+    Games.update(gameId, {$set: {isVoting: true}});
   }
 });

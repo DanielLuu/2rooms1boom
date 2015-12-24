@@ -22,5 +22,5 @@ Meteor.methods({
 				Games.update(gameId, {$set: {hostageRoomTwo: playerId}});
 			}
 		}
-	},
+	}
 })
