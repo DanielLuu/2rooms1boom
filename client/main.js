@@ -133,7 +133,8 @@ function generateNewPlayer(game, name){
     isBomber: false,
     isPresident: false,
     isRoom1: false,
-    votes: 0
+    votes: 0,
+    voted: false
   };
 
   var playerID = Players.insert(player);
@@ -484,12 +485,67 @@ function getRoundsRemaining(){
   }
 }
 
+function checkVotes(game, players, room) {
+  var totalVotes = 0;
+  var maxVotes = -1;
+  var newLeader = null;
+
+  players.forEach(function(player){
+    if(room === "1") {
+      if (player.isRoom1 == true) {
+        if(player.votes > maxVotes) {
+          maxVotes = player.votes;
+          newLeader = player._id;
+        }
+        totalVotes += player.votes;
+      }
+    } else {
+      if (player.isRoom1 == false) {
+        if(player.votes > maxVotes) {
+          maxVotes = player.votes;
+          newLeader = player._id;
+        }
+        totalVotes += player.votes;
+      }
+    }
+  });
+  if (totalVotes == players.count()/2){
+    if(room === "1"){
+      Games.update(game._id, {$set: {isVoting1: false}});
+    } else {
+      Games.update(game._id, {$set: {isVoting2: false}});
+    }
+    Meteor.call('updateLeader', newLeader, game._id, room, function(err, res) {
+      console.log(err);
+      console.log(res);
+    });
+    players.forEach(function(player){
+      if(room === "1") {
+        if (player.isRoom1 == true) {
+          Players.update(player._id, {$set: {voted: false, votes: 0}});
+        }
+      } else {
+        if (player.isRoom1 == false) {
+          Players.update(player._id, {$set: {voted: false, votes: 0}});
+        }
+      }
+    });
+  }
+}
+
 function checkRounds() {
   var game = getCurrentGame();
+  var players = Players.find({
+    'gameID': game._id
+  });
+
+  if (game.isVoting1) {
+    checkVotes(game, players, "1");
+  } else if (game.isVoting2) {
+    checkVotes(game, players, "2");
+  }
+
   if (getRoundsRemaining() < 0 && getTimeRemaining() == 0) {
-    var players = Players.find({
-      'gameID': game._id
-    });
     players.forEach(function(player){
       if (player._id === game.hostageRoomOne){
         Players.update(player._id, {$set: {isRoom1: false}});
@@ -535,8 +591,13 @@ Template.gameView.helpers({
     var player = Players.findOne(id); 
     return player.votes;
   },
-  isVoting: function (id) {
-    return game.isVoting;
+  isVoting1: function () {
+    var game = getCurrentGame();
+    return game.isVoting1;
+  },
+  isVoting2: function () {
+    var game = getCurrentGame();
+    return game.isVoting2;
   },
   player: getCurrentPlayer,
   players: function () {
@@ -600,20 +661,48 @@ Template.gameView.events({
     var room = event.target.getAttribute('data-room');
     var gameId = Games.findOne()._id;
     var currentPlayer = getCurrentPlayer();
-    if ((currentPlayer._id ===  game.leaderRoomOne && room == 1) || (currentPlayer._id ===  game.leaderRoomTwo && room == 2)) {
+    if (game.isVoting1 || game.isVoting2) {
+      // if ((currentPlayer.isRoom1 ==  true && room == 1) || (currentPlayer.isRoom1 ==  false && room == 2)) {
+      if (currentPlayer.voted == false) {
+        var newVotes = Players.findOne(playerId).votes + 1;
+        Players.update(playerId, {$set: {votes: newVotes}});
+        Players.update(currentPlayer._id, {$set: {voted: true}});
+      }
+    } else if ((currentPlayer._id ===  game.leaderRoomOne && room == 1) || (currentPlayer._id ===  game.leaderRoomTwo && room == 2)) {
       Meteor.call('updateHostage', playerId, gameId, room, function(err, res) {
         console.log(err);
         console.log(res);
       }); 
-    } else if ((currentPlayer.isRoom1 ==  true && room == 1) || (currentPlayer.isRoom1 ==  false && room == 2)) {
-      Meteor.call('updateLeader', playerId, gameId, room, function(err, res) {
-        console.log(err);
-        console.log(res);
-      });
     }
   },
   'click .btn-vote': function () {
     var game = getCurrentGame();
-    Games.update(gameId, {$set: {isVoting: true}});
+    var currentPlayer = getCurrentPlayer();
+    if (currentPlayer.isRoom1 == true){
+      Games.update(game._id, {$set: {isVoting1: true}});  
+    } else {
+      Games.update(game._id, {$set: {isVoting2: true}});
+    } 
+  },
+  'click .btn-cancel-vote': function () {
+    var game = getCurrentGame();
+    var players = Players.find({
+      'gameID': game._id
+    });
+    if (game.isVoting1 == true){
+      Games.update(game._id, {$set: {isVoting1: false}});
+      players.forEach(function(player){
+        if (player.isRoom1 == true) {
+          Players.update(player._id, {$set: {voted: false, votes: 0}});
+        }
+      });
+    } else if (game.isVoting2 == true){
+      Games.update(game._id, {$set: {isVoting2: false}});
+      players.forEach(function(player){
+        if (player.isRoom1 == false) {
+          Players.update(player._id, {$set: {voted: false, votes: 0}});
+        }
+      });
+    }
   }
 });

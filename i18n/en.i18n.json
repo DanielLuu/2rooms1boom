@@ -18,6 +18,7 @@
         "room2": "Room 2",
         "leader": "Leader",
         "vote": "Leader Vote",
+        "voting": "Cancel Vote",
         "hostage": "Hostage",
         "location reference": "Hangouts",
         "end game": "End Game",
